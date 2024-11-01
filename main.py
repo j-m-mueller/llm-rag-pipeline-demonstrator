@@ -1,10 +1,16 @@
+"""main.py -- Main entry point for document query pipeline application.
+Handles command line arguments, document loading, and pipeline execution with logging support."""
+
 import argparse
-from dotenv import load_dotenv
-import os
 import logging
-from preprocessing import load_documents, preprocess_documents
-from document_store import DocumentStoreManager
-from pipeline import QueryPipeline
+import os
+
+from dotenv import load_dotenv
+
+from src.document_store import DocumentStoreManager
+from src.pipeline import QueryPipeline
+from src.preprocessing import load_documents, preprocess_documents
+
 
 def main():
     # Configure logging
@@ -57,4 +63,4 @@ def main():
         logging.info(result["answers"][0].answer)
 
 if __name__ == "__main__":
-    main() 
+    main()

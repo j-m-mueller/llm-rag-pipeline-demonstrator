@@ -1,7 +1,11 @@
+"""src.document_store.py -- Implements DocumentStoreManager class for managing FAISS document store.
+Provides methods for document storage, embedding generation, and retriever management."""
+
 from typing import List
 from haystack.schema import Document
 from haystack.document_stores import FAISSDocumentStore
 from haystack.nodes import EmbeddingRetriever
+
 
 class DocumentStoreManager:
     def __init__(self, embedding_model: str = "sentence-transformers/multi-qa-mpnet-base-dot-v1"):

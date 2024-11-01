@@ -1,3 +1,13 @@
-farm-haystack
-sentence-transformers
-torch 
+farm-haystack>=1.21.2
+farm-haystack[preprocessing]
+farm-haystack[sql]
+faiss-cpu>=1.7.4
+python-dotenv>=1.0.0
+sentence-transformers>=2.2.2
+openai>=1.12.0
+torch>=2.2.0
+transformers>=4.38.2
+
+# test dependencies
+pytest>=7.4.0
+pytest-cov>=4.1.0 

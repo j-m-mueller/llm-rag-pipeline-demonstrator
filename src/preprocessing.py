@@ -1,7 +1,12 @@
+"""src.preprocessing.py -- Document loading and preprocessing utilities.
+Provides functions for loading documents from filesystem and preprocessing them into chunks using Haystack."""
+
 from pathlib import Path
 from typing import List
 from haystack.nodes import PreProcessor
 from haystack.schema import Document
+from haystack.utils import convert_files_to_docs
+
 
 def load_documents(doc_dir: str) -> List[Document]:
     """
@@ -10,21 +15,14 @@ def load_documents(doc_dir: str) -> List[Document]:
     :param doc_dir: Path to the directory containing documents
     :return: List of loaded Document objects
     """
-    documents = []
-    doc_dir = Path(doc_dir)
+    documents = convert_files_to_docs(dir_path=doc_dir)
     
-    for file_path in doc_dir.glob("**/*.*"):
-        if file_path.is_file():
-            with open(file_path, "r", encoding="utf-8") as f:
-                content = f.read()
-                documents.append(
-                    Document(
-                        content=content,
-                        meta={"file_path": str(file_path)}
-                    )
-                )
+    # Add file path to metadata for each document
+    for doc in documents:
+        doc.meta["file_path"] = str(doc.meta.get("name", ""))
     
     return documents
+
 
 def preprocess_documents(documents: List[Document]) -> List[Document]:
     """

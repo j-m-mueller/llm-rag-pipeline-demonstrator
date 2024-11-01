@@ -1,5 +1,9 @@
+"""src.pipeline.py -- Implements QueryPipeline class for document retrieval and LLM-based question answering.
+Contains methods for initializing and running the pipeline with a retriever and prompt node."""
+
+from haystack.nodes import EmbeddingRetriever, PromptNode
 from haystack.pipelines import Pipeline
-from haystack.nodes import PromptNode, EmbeddingRetriever
+
 
 class QueryPipeline:
     def __init__(self, retriever: EmbeddingRetriever, model_name: str = "gpt-3.5-turbo"):
@@ -12,7 +16,7 @@ class QueryPipeline:
         self.retriever = retriever
         self.prompt_node = PromptNode(
             model_name_or_path=model_name,
-            api_key="your-api-key",  # Replace with your actual API key
+            api_key="your-api-key",  # replace with your actual API key
             default_prompt_template="Given the context, answer the question. Context: {join(documents)} Question: {query}"
         )
         
@@ -31,4 +35,4 @@ class QueryPipeline:
         if params is None:
             params = {"Retriever": {"top_k": 3}}
         
-        return self.pipeline.run(query=query, params=params) 
+        return self.pipeline.run(query=query, params=params)

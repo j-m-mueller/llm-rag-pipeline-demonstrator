@@ -1,5 +1,6 @@
-"""src.pipeline.py -- Implements QueryPipeline class for document retrieval and LLM-based question answering.
-Contains methods for initializing and running the pipeline with a retriever and prompt node."""
+"""src.pipeline.pipeline -- Implements QueryPipeline class for document retrieval and LLM-based question answering."""
+
+import os
 
 from haystack.nodes import EmbeddingRetriever, PromptNode
 from haystack.pipelines import Pipeline
@@ -16,8 +17,12 @@ class QueryPipeline:
         self.retriever = retriever
         self.prompt_node = PromptNode(
             model_name_or_path=model_name,
-            api_key="your-api-key",  # replace with your actual API key
-            default_prompt_template="Given the context, answer the question. Context: {join(documents)} Question: {query}"
+            api_key=os.environ["OPENAI_API_KEY"],
+            default_prompt_template="Given the context, answer the question. Context: {join(documents)} Question: {query}",
+            max_length=500,  # maximum length for the prompt template
+            model_kwargs={
+                "temperature": 0.7  # randomness in response generation
+            }
         )
         
         self.pipeline = Pipeline()
@@ -33,6 +38,14 @@ class QueryPipeline:
         :return: The pipeline results
         """
         if params is None:
-            params = {"Retriever": {"top_k": 3}}
+            params = {
+                "Retriever": {"top_k": 3}
+            }
         
-        return self.pipeline.run(query=query, params=params)
+        result = self.pipeline.run(query=query, params=params)
+        
+        # ensure we have a consistent response format
+        if "answers" not in result:
+            result["answers"] = [{"answer": result.get("results", ["No answer generated."])[0]}]
+        
+        return result

@@ -1,5 +1,4 @@
-"""src.preprocessing.py -- Document loading and preprocessing utilities.
-Provides functions for loading documents from filesystem and preprocessing them into chunks using Haystack."""
+"""src.pipeline.preprocessing -- Document loading and preprocessing utilities."""
 
 from pathlib import Path
 from typing import List
@@ -17,7 +16,7 @@ def load_documents(doc_dir: str) -> List[Document]:
     """
     documents = convert_files_to_docs(dir_path=doc_dir)
     
-    # Add file path to metadata for each document
+    # add file path to metadata for each document
     for doc in documents:
         doc.meta["file_path"] = str(doc.meta.get("name", ""))
     

@@ -1,16 +1,13 @@
-"""dashboard.py -- Streamlit dashboard for document query pipeline.
+"""Streamlit dashboard for document query pipeline.
 Provides a web interface for document upload, query input, and result visualization."""
 
 import os
 import sys
-
 from pathlib import Path
 
 sys.path.insert(0, os.path.abspath(Path().parent.parent))
 
-
 import streamlit as st
-
 from dotenv import load_dotenv
 from src.pipeline.document_store import DocumentStoreManager
 from src.pipeline.pipeline import QueryPipeline
@@ -18,12 +15,13 @@ from src.pipeline.preprocessing import load_documents, preprocess_documents
 
 
 def load_css():
-    with open("style.css") as f:
+    """Load custom CSS styling."""
+    with open("./src/dashboard/style.css") as f:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 
 def initialize_session_state():
-    """initialize streamlit session state variables."""
+    """Initialize streamlit session state variables."""
     if 'doc_store_manager' not in st.session_state:
         st.session_state.doc_store_manager = None
     if 'pipeline' not in st.session_state:
@@ -31,14 +29,14 @@ def initialize_session_state():
 
 
 def main():
-    # Configure page first, before any other Streamlit commands
+    # configure page first, before any other Streamlit commands
     st.set_page_config(
         page_title="Document Query Pipeline",
         page_icon="🔍",
         layout="wide"
     )
     
-    # Now load CSS after page config
+    # now load CSS after page config
     load_css()
     
     # load environment variables
@@ -147,9 +145,11 @@ def main():
             with st.expander("Source Documents"):
                 for doc in result["documents"]:
                     st.markdown(f"**Source:** {doc.meta.get('file_path', 'Unknown')}")
+                    if 'page' in doc.meta:
+                        st.markdown(f"**Page:** {doc.meta['page']}")
                     st.markdown(f"**Content:** {doc.content[:500]}...")
                     st.markdown("---")
 
 
 if __name__ == "__main__":
-    main() 
+    main()

@@ -1,13 +1,12 @@
-"""src.pipeline.pipeline -- Implements QueryPipeline class for document retrieval and LLM-based question answering."""
+"""src.pipeline.pipeline.py -- Query pipeline implementation for document retrieval and LLM processing."""
 
 import os
 
 from haystack.nodes import EmbeddingRetriever, PromptNode
 from haystack.pipelines import Pipeline
 
-
 class QueryPipeline:
-    def __init__(self, retriever: EmbeddingRetriever, model_name: str = "gpt-3.5-turbo"):
+    def __init__(self, retriever: EmbeddingRetriever, model_name: str = "gpt-4o-mini"):
         """
         Initialize the QueryPipeline with retriever and prompt node.
 
@@ -15,16 +14,28 @@ class QueryPipeline:
         :param model_name: Name of the language model to use
         """
         self.retriever = retriever
+        
+        PROMPT_TEMPLATE = """
+        Given the context, answer the question.
+        
+        Context: {join(documents)}
+        Question: {query}
+        
+        Please limit your response to the provided context. If the context does not contain the answer,
+        respond with "This question cannot be answered based on the given context."
+        """
+        
         self.prompt_node = PromptNode(
             model_name_or_path=model_name,
-            api_key=os.environ["OPENAI_API_KEY"],
-            default_prompt_template="Given the context, answer the question. Context: {join(documents)} Question: {query}",
+            api_key=os.environ.get("OPENAI_API_KEY"),
+            default_prompt_template=PROMPT_TEMPLATE,
             max_length=500,  # maximum length for the prompt template
             model_kwargs={
                 "temperature": 0.7  # randomness in response generation
             }
         )
         
+        # set up pipeline
         self.pipeline = Pipeline()
         self.pipeline.add_node(component=self.retriever, name="Retriever", inputs=["Query"])
         self.pipeline.add_node(component=self.prompt_node, name="PromptNode", inputs=["Retriever"])
@@ -37,10 +48,7 @@ class QueryPipeline:
         :param params: Optional parameters for the pipeline components
         :return: The pipeline results
         """
-        if params is None:
-            params = {
-                "Retriever": {"top_k": 3}
-            }
+        params = {"Retriever": {"top_k": 5}} if params is None else params       
         
         result = self.pipeline.run(query=query, params=params)
         
@@ -49,3 +57,4 @@ class QueryPipeline:
             result["answers"] = [{"answer": result.get("results", ["No answer generated."])[0]}]
         
         return result
+    

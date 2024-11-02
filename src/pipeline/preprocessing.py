@@ -1,8 +1,8 @@
-"""src.pipeline.preprocessing -- Document loading and preprocessing utilities."""
+"""src.pipeline.preprocessing.py -- Document loading and preprocessing utilities."""
 
 from pathlib import Path
 from typing import List
-from haystack.nodes import PreProcessor
+from haystack.nodes import PreProcessor, PDFToTextConverter
 from haystack.schema import Document
 from haystack.utils import convert_files_to_docs
 
@@ -10,15 +10,14 @@ from haystack.utils import convert_files_to_docs
 def load_documents(doc_dir: str) -> List[Document]:
     """
     Load documents from a specified directory.
-
-    :param doc_dir: Path to the directory containing documents
-    :return: List of loaded Document objects
-    """
-    documents = convert_files_to_docs(dir_path=doc_dir)
     
-    # add file path to metadata for each document
-    for doc in documents:
-        doc.meta["file_path"] = str(doc.meta.get("name", ""))
+    :param doc_dir: Path to the directory containing documents
+    :return: List of Document objects
+    """
+    documents = []
+    doc_dir = Path(doc_dir)
+    
+    documents = convert_files_to_docs(doc_dir)
     
     return documents
 
@@ -26,9 +25,9 @@ def load_documents(doc_dir: str) -> List[Document]:
 def preprocess_documents(documents: List[Document]) -> List[Document]:
     """
     Preprocess documents into chunks.
-
-    :param documents: List of Document objects to process
-    :return: List of processed and chunked Document objects
+    
+    :param documents: List of documents to process
+    :return: List of processed Document objects
     """
     preprocessor = PreProcessor(
         clean_empty_lines=True,
@@ -43,4 +42,4 @@ def preprocess_documents(documents: List[Document]) -> List[Document]:
     for doc in documents:
         processed_docs.extend(preprocessor.process([doc]))
     
-    return processed_docs 
+    return processed_docs

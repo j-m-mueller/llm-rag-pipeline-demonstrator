@@ -5,6 +5,7 @@ import os
 from haystack.nodes import EmbeddingRetriever, PromptNode
 from haystack.pipelines import Pipeline
 
+
 class QueryPipeline:
     def __init__(self, retriever: EmbeddingRetriever, model_name: str = "gpt-4o-mini"):
         """
@@ -16,12 +17,21 @@ class QueryPipeline:
         self.retriever = retriever
         
         PROMPT_TEMPLATE = """
-        Given the context, answer the question.
+        You are a helpful assistant. You need to provide answers to a QUESTION exclusively based on provided CONTEXT.
         
-        Context: {join(documents)}
-        Question: {query}
+        CONTEXT: 
         
-        Please limit your response to the provided context. If the context does not contain the answer,
+        {join(documents)}
+        
+        END OF CONTEXT.
+        
+        QUESTION:
+        
+        {query}
+        
+        END OF QUESTION.
+        
+        Make sure to limit your response exclusively to the provided CONTEXT. If the CONTEXT does not contain the answer,
         respond with "This question cannot be answered based on the given context."
         """
         

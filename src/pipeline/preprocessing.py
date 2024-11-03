@@ -2,7 +2,7 @@
 
 from pathlib import Path
 from typing import List
-from haystack.nodes import PreProcessor, PDFToTextConverter
+from haystack.nodes import PreProcessor
 from haystack.schema import Document
 from haystack.utils import convert_files_to_docs
 

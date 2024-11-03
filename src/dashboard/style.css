@@ -1,1 +1,9 @@
- 
+/* styling of streamlit components */
+
+.stButton button {
+    width: 100%;
+}
+
+.stTextArea textarea {
+    font-size: 16px;
+} 

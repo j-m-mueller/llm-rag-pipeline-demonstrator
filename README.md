@@ -1,6 +1,6 @@
 # Haystack Document Query Pipeline
 
-This project implements a document query pipeline using Haystack. It allows you to load documents, process them, store them in a vector store, and query them using an LLM.
+This project implements a document query pipeline using Haystack. It allows you to load documents, process them, store them in a vector store, and query them using an LLM. Interaction with the pipeline is provided through a Streamlit dashboard.
 
 ## Project Components
 
@@ -30,12 +30,8 @@ This project implements a document query pipeline using Haystack. It allows you 
 pip install -r requirements.txt
 ```
 
-2. Set up your OpenAI API key as an environment variable:
-```bash
-export OPENAI_API_KEY="your-api-key"
-```
+2. Set up your OpenAI API key by create a `.env` file in the project root:
 
-Or create a `.env` file in the project root:
 ```bash
 OPENAI_API_KEY=your-api-key
 ```
@@ -52,7 +48,7 @@ python -m src.pipeline.main --doc_dir /path/to/documents --query "Your query her
 
 Optional arguments:
 - `--embedding_model`: Specify a different embedding model (default: sentence-transformers/multi-qa-mpnet-base-dot-v1)
-- `--llm_model`: Specify a different LLM model (default: gpt-3.5-turbo)
+- `--llm_model`: Specify a different LLM model (default: gpt-4o-mini)
 
 ### Dashboard Interface
 
@@ -61,6 +57,8 @@ Run the Streamlit dashboard:
 ```bash
 streamlit run src/dashboard/app.py
 ```
+
+(or via the shell script `run_dashboard.sh`)
 
 The dashboard provides:
 - Document upload interface
@@ -79,9 +77,7 @@ The dashboard provides:
 - Web-based dashboard interface
 - Comprehensive test suite
 
-## Development
-
-### Running Tests
+## Running Tests
 
 Run the test suite:
 
@@ -94,3 +90,5 @@ For test coverage report:
 ```bash
 pytest tests/ --cov=src --cov-report=term-missing
 ```
+
+(or via the shell script `run_tests.sh`)

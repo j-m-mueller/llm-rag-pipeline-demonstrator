@@ -30,6 +30,8 @@ This project implements a document query pipeline using Haystack. It allows you 
 pip install -r requirements.txt
 ```
 
+Note that some additional manual setup / configuration may be required regarding CUDA and GPU usage.
+
 2. Set up your OpenAI API key by create a `.env` file in the project root:
 
 ```bash

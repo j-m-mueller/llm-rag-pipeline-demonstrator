@@ -1,6 +1,5 @@
-"""Test fixtures and configuration."""
+"""src.tests.conftest.py -- Test fixtures and configuration."""
 
-import os
 import pytest
 from pathlib import Path
 from typing import List
@@ -11,7 +10,11 @@ from src.pipeline.document_store import DocumentStoreManager
 
 @pytest.fixture
 def test_docs() -> List[Document]:
-    """Create test documents."""
+    """
+    Create test documents for testing purposes.
+
+    :return: List of test documents
+    """
     return [
         Document(
             content="This is a test document.",
@@ -26,7 +29,11 @@ def test_docs() -> List[Document]:
 
 @pytest.fixture
 def doc_store() -> DocumentStoreManager:
-    """Create a test document store."""
+    """
+    Create a test document store instance.
+
+    :return: A configured document store manager
+    """
     store = DocumentStoreManager(
         db_path="test_document_store.db",
         index_path="test_document_store.faiss"
@@ -36,8 +43,13 @@ def doc_store() -> DocumentStoreManager:
 
 
 @pytest.fixture
-def test_dir(tmp_path) -> Path:
-    """Create a temporary directory with test files."""
+def test_dir(tmp_path: Path) -> Path:
+    """
+    Create a temporary directory with test files.
+
+    :param tmp_path: Pytest fixture providing temporary directory
+    :return: Path to the created test directory
+    """
     # Create test directory
     test_dir = tmp_path / "test_docs"
     test_dir.mkdir()

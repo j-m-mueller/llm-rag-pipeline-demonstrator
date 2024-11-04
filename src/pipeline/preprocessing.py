@@ -14,10 +14,13 @@ def load_documents(doc_dir: str) -> List[Document]:
     :param doc_dir: Path to the directory containing documents
     :return: List of Document objects
     """
-    documents = []
     doc_dir = Path(doc_dir)
+    documents = convert_files_to_docs(dir_path=doc_dir)
     
-    documents = convert_files_to_docs(doc_dir)
+    # Ensure file paths are stored in metadata
+    for doc in documents:
+        if not doc.meta.get("file_path"):
+            doc.meta["file_path"] = str(doc.meta.get("name", ""))
     
     return documents
 

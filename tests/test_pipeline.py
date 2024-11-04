@@ -16,9 +16,9 @@ def test_pipeline_initialization(doc_store: DocumentStoreManager) -> None:
     :param doc_store: Document store instance
     """
     pipeline = QueryPipeline(retriever=doc_store.get_retriever())
-    assert pipeline.retriever is not None
-    assert pipeline.prompt_node is not None
-    assert pipeline.pipeline is not None
+    assert pipeline.retriever is not None, "retriever missing"
+    assert pipeline.prompt_node is not None, "prompt node missing"
+    assert pipeline.pipeline is not None, "pipeline missing"
 
 
 def test_pipeline_run(doc_store: DocumentStoreManager, test_docs: List[Document], monkeypatch: pytest.MonkeyPatch) -> None:
@@ -40,5 +40,5 @@ def test_pipeline_run(doc_store: DocumentStoreManager, test_docs: List[Document]
     monkeypatch.setattr(pipeline.pipeline, "run", mock_run)
     
     result = pipeline.run("test query")
-    assert "answers" in result
-    assert result["answers"][0]["answer"] == "Test answer"
+    assert "answers" in result, "answers missing"
+    assert result["answers"][0]["answer"] == "Test answer", "answer mismatch"

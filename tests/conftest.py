@@ -1,10 +1,18 @@
 """src.tests.conftest.py -- Test fixtures and configuration."""
 
-import pytest
+import os
+import sys
+import time
+
 from pathlib import Path
-from typing import List
+
+sys.path.insert(0, os.path.abspath(Path().parent))
+
+import pytest
 
 from haystack.schema import Document
+from typing import List
+
 from src.pipeline.document_store import DocumentStoreManager
 
 
@@ -28,18 +36,37 @@ def test_docs() -> List[Document]:
 
 
 @pytest.fixture
-def doc_store() -> DocumentStoreManager:
+def doc_store(tmp_path) -> DocumentStoreManager:
     """
     Create a test document store instance.
 
+    :param tmp_path: Pytest fixture providing temporary directory
     :return: A configured document store manager
     """
+    # Create unique paths for each test
+    db_path = str(tmp_path / "test_document_store.db")
+    index_path = str(tmp_path / "test_document_store.faiss")
+    
+    # Create fresh document store
     store = DocumentStoreManager(
-        db_path="test_document_store.db",
-        index_path="test_document_store.faiss"
+        db_path=db_path,
+        index_path=index_path,
+        clean_start=True
     )
+    
     yield store
-    store.cleanup()
+    
+    # Cleanup after test
+    try:
+        store._cleanup_existing_files()
+    finally:
+        # Force cleanup of files
+        for file_path in [db_path, index_path]:
+            try:
+                if os.path.exists(file_path):
+                    os.remove(file_path)
+            except (PermissionError, OSError):
+                pass
 
 
 @pytest.fixture
